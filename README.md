@@ -16,12 +16,22 @@ You can wrap OtpRobot by Supervisor in iex:
 **2. Todo**
 
 ```
-    {:ok, cache} = Todo.Cache.start()  
-    :erlang.system_info(:process_count)  //=> n  
-    Enum.each(1..10_000, fn index ->  
-      Todo.Cache.server_process(cache, "todo_list #{index}")  
-    end)  
-    :erlang.system_info(:process_count)  //=> n + 10000  
+  # Supervisor 
+
+  Todo.System.start_link()
+  Todo.Cache.server_process("Bob's list")
+  :erlang.system_info(:process_count)  #65
+
+  Process.exit(Process.whereis(Todo.Cache), :kill) #Terminates the entire process structure
+
+  bobs_list = Todo.Cache.server_process("Bob's list")
+
+  :erlang.system_info(:process_count) #65, The process count remains the same
+
+  # Use -> Write to persist folder
+  
+  Todo.Server.add_entry(bobs_list, %{date: ~D[2020-12-19], title: "Coding"})
+  Todo.Server.entries(bobs_list, ~D[2020-12-19])
 ```
 
 
