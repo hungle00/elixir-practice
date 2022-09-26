@@ -12,7 +12,7 @@ defmodule Metex do
       :world
 
   """
-  def hello(cities) do
+  def temperatures_of(cities) do
     coordinator_pid = spawn(Metex.Coordinator, :loop, [[], Enum.count(cities)])
 
     cities |> Enum.each(fn city ->

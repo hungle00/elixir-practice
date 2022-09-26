@@ -13,16 +13,18 @@ You can wrap OtpRobot by Supervisor in iex:
 ```
 
 
-**2. Todo**
+**2. Metex**
 
 ```
-    {:ok, cache} = Todo.Cache.start()  
-    :erlang.system_info(:process_count)  //=> n  
-    Enum.each(1..10_000, fn index ->  
-      Todo.Cache.server_process(cache, "todo_list #{index}")  
-    end)  
-    :erlang.system_info(:process_count)  //=> n + 10000  
+# Metex.Worker
+cities = ["Singapore", "Monaco", "Vatican City", "Hong Kong", "Macau"]
+Metex.temperatures_of(cities)
+
+
+# Metex.Worker2
+{:ok, pid} = Metex.Worker2.start_link
+Metex.Worker2.get_temperature(pid, "Hanoi")
 ```
 
-
-
+**3. Todo**
+Todo now moves to https://github.com/hungle00/todo-elixir.git
