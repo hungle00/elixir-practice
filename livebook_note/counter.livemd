@@ -1,0 +1,66 @@
+# counter
+
+## Section
+
+```elixir
+defmodule Counter do
+  def loop(count) do
+    receive do
+      {:next} ->
+        IO.puts("Current count: #{count}")
+        loop(count + 1)
+    end
+  end
+end
+```
+
+```elixir
+# pid = spawn(&Talker.loop/0) # & is call capture operator
+counter = spawn(Counter, :loop, [1])
+send(counter, {:next})
+```
+
+```elixir
+defmodule Counter2 do
+  def start(count) do
+    spawn(__MODULE__, :loop, [count])
+  end
+
+  def next(counter) do
+    send(counter, {:next})
+  end
+
+  def loop(count) do
+    receive do
+      {:next} ->
+        IO.puts("Current count: #{count}")
+        loop(count + 1)
+    end
+  end
+end
+```
+
+```elixir
+counter = Counter2.start(10)
+Counter2.next(counter)
+Counter2.next(counter)
+```
+
+& is call capture operator. & can capture two types of functions:
+
+* function with given name and arity from a module   
+  Syntax `&(module_name.function_name/arity)`
+  ```elixir
+  speak = &(IO.puts/1)
+  speak.("hello")  # hello
+  ```
+* anonymous functions
+  ```elixir
+  add_one = fn x -> x + 1 end
+  add_one.(1) # 2
+  ```
+  is equivalent to
+  ```elixir
+  add_one = &(&1 + 1)
+  add_one.(1) # 2
+  ```

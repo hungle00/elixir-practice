@@ -1,0 +1,28 @@
+# queue
+
+## Section
+
+```elixir
+defmodule SimpleQueue do
+  def enqueue(queue, item) do
+    [item | queue]
+  end
+
+  def peak(queue) do
+    [head | _] = queue
+    head
+  end
+
+  def dequeue(queue) do
+    Enum.drop(queue, -1)
+  end
+
+  def count(queue), do: length(queue)
+end
+```
+
+```elixir
+[1, 3, 5]
+|> SimpleQueue.enqueue(9)
+|> SimpleQueue.dequeue()
+```

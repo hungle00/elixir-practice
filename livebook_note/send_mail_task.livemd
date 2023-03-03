@@ -1,0 +1,48 @@
+# send_mail_task
+
+## Section
+
+```elixir
+emails = [
+  "hello@world.com",
+  "hola@world.com",
+  "nihao@world.com",
+  "konnichiwa@world.com"
+]
+
+defmodule Sender do
+  def send_mail(email) do
+    Process.sleep(3000)
+    IO.puts("Email to #{email} sent")
+    {:ok, "email_sent"}
+  end
+
+  def notify_all(emails) do
+    # Enum.each(emails, fn(email) -> Sender.send_mail(email) end)
+    Enum.each(emails, &send_mail/1)
+  end
+end
+
+# Sender.notify_all(emails)
+```
+
+```elixir
+# Asynchronous code usign Task module
+Enum.each(emails, fn email ->
+  Task.async(fn -> Sender.send_mail(email) end)
+end)
+```
+
+```elixir
+# Default time out of await/1 is 5000ms, which is five seconds 
+# We can change by passing time_out as a second argument
+Task.async(fn -> Sender.send_mail("steve@email.com") end)
+|> Task.await(15_000)
+```
+
+```elixir
+# Task.async_stream/3 acts like Task.async/1 and Enum.map/2 combined, with one major difference:
+# we can set a limit on the number of processes running at the same time
+Task.async_stream(emails, &Sender.send_mail/1)
+|> Enum.to_list()
+```
