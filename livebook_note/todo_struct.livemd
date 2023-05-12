@@ -1,0 +1,137 @@
+# todo struct
+
+## Section
+
+```elixir
+defmodule Todo do
+  defstruct [:id, :note, status: "unfinished"]
+end
+```
+
+```elixir
+defmodule TodoList do
+  def new, do: []
+
+  def add_todo(todo_list, note) do
+    last_todo = List.first(todo_list, %{id: 0})
+    todo = %Todo{note: note, id: last_todo.id + 1}
+    [todo | todo_list]
+  end
+
+  def update_todo(notes, id, note) do
+    todo = %Todo{id: id, note: note}
+    update_in(notes, [Access.filter(&(&1.id == id))], fn _ -> todo end)
+  end
+
+  def get_todo_list(todo_list) do
+    todo_list
+  end
+
+  def get_todo_by_id(notes, id) do
+    Enum.find(notes, fn note -> Map.get(note, :id) == id end)
+  end
+
+  def delete_todo(notes, id) do
+    notes |> Enum.reject(fn note -> Map.get(note, :id) == id end)
+  end
+end
+```
+
+```elixir
+todo_list =
+  TodoList.new()
+  |> TodoList.add_todo("Hello Livebook")
+  |> TodoList.add_todo("Hello Elixir")
+  |> TodoList.add_todo("Elixir Struct")
+
+todo_list
+|> TodoList.update_todo(2, "Hi Elixir")
+|> TodoList.delete_todo(2)
+```
+
+```elixir
+defmodule TodoServer do
+  use GenServer
+
+  # Client
+  def start do
+    GenServer.start(__MODULE__, [])
+  end
+
+  def all_notes(_pid) do
+    GenServer.call(__MODULE__, :all_notes)
+  end
+
+  def create_note(_pid, note) do
+    GenServer.cast(__MODULE__, {:create_note, note})
+  end
+
+  def get_note(_pid, id) do
+    GenServer.call(__MODULE__, {:get_note, id})
+  end
+
+  def delete_note(_pid, id) do
+    GenServer.cast(__MODULE__, {:delete_note, id})
+  end
+
+  def update_note(_pid, note) do
+    GenServer.cast(__MODULE__, {:update_note, note})
+  end
+
+  # Server
+  @impl true
+  def init(_) do
+    {:ok, TodoList.new()}
+  end
+
+  @impl true
+  def handle_cast({:create_note, note}, notes) do
+    updated_notes = TodoList.add_todo(notes, note)
+    {:noreply, updated_notes}
+  end
+
+  @impl true
+  def handle_cast({:delete_note, id}, notes) do
+    updated_notes = TodoList.delete_todo(id, notes)
+    {:noreply, updated_notes}
+  end
+
+  @impl true
+  def handle_cast({:update_note, id, note}, notes) do
+    updated_notes = TodoList.update_todo(notes, id, note)
+    {:noreply, updated_notes}
+  end
+
+  @impl true
+  def handle_call({:get_note, id}, _from, notes) do
+    found_note = TodoList.get_todo_by_id(id, notes)
+    {:reply, found_note, notes}
+  end
+
+  @impl true
+  def handle_call(:all_notes, _from, notes) do
+    {:reply, notes, notes}
+  end
+end
+```
+
+```elixir
+{:ok, todo_list} = TodoServer.start()
+TodoServer.all_notes(todo_list)
+# Process.alive?(todo_list)
+```
+
+```elixir
+{t, pids} =
+  :timer.tc(fn ->
+    for id <- 1..400 do
+      {:ok, pid} = GenServer.start(FunGenServer, id: id)
+      GenServer.cast(pid, :caculate)
+      pid
+    end
+  end)
+
+IO.inspect("started #{length(pids)} processes in #{div(t, 1000)} ms")
+
+Enum.random(pids) |> GenServer.call(:ping) |> IO.inspect()
+```

@@ -1,6 +1,6 @@
 # Elixir practice
 
-**1. Toy Robot**
+### 1. Toy Robot
 
 *Note in supervisor*
 
@@ -13,7 +13,7 @@ You can wrap OtpRobot by Supervisor in iex:
 ```
 
 
-**2. Metex**
+### 2. Metex
 
 ```
 # Metex.Worker
@@ -26,5 +26,5 @@ Metex.temperatures_of(cities)
 Metex.Worker2.get_temperature(pid, "Hanoi")
 ```
 
-**3. Todo**
-Todo now moves to https://github.com/hungle00/todo-elixir.git
+### 3. Livebook Note
+

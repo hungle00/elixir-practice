@@ -1,3 +1,8 @@
+# KVStore
+
+## Section
+
+```elixir
 defmodule KVStore do
   use GenServer
 
@@ -12,6 +17,7 @@ defmodule KVStore do
   def get(pid, key) do
     GenServer.call(pid, {:get, key})
   end
+
   def init(_) do
     {:ok, %{}}
   end
@@ -24,3 +30,4 @@ defmodule KVStore do
     {:reply, Map.get(state, key), state}
   end
 end
+```

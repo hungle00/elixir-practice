@@ -2,16 +2,6 @@ defmodule Metex do
   @moduledoc """
   Documentation for `Metex`.
   """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Metex.hello()
-      :world
-
-  """
   def temperatures_of(cities) do
     coordinator_pid = spawn(Metex.Coordinator, :loop, [[], Enum.count(cities)])
 

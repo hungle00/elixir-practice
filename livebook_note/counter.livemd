@@ -51,16 +51,16 @@ Counter2.next(counter)
 * function with given name and arity from a module   
   Syntax `&(module_name.function_name/arity)`
   ```elixir
-  speak = &(IO.puts/1)
-  speak.("hello")  # hello
+          speak = &(IO.puts/1)
+          speak.("hello")  # hello
   ```
 * anonymous functions
   ```elixir
-  add_one = fn x -> x + 1 end
-  add_one.(1) # 2
+          add_one = fn x -> x + 1 end
+          add_one.(1) # 2
   ```
   is equivalent to
   ```elixir
-  add_one = &(&1 + 1)
-  add_one.(1) # 2
+          add_one = &(&1 + 1)
+          add_one.(1) # 2
   ```
