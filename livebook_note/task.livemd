@@ -8,9 +8,19 @@
 |> Enum.map(fn task -> Task.await(task) end)
 ```
 
+Using combining `Task.async/1` and `Task.await/1` work well, but we can make our code clearer and cleaner by laveraging `Task.async_stream/3`
+
 ```elixir
 1..10
 |> Task.async_stream(fn number -> number + 1 end)
+|> Enum.map(fn {:ok, result} -> result end)
+```
+
+Instead of increasing a number by one, let's imagine we have a function `api_call/1` that makes an HTTP request somewhere
+
+```elixir
+1..10
+|> Task.async_stream(fn idx -> api_call(idx) end)
 |> Enum.map(fn {:ok, result} -> result end)
 ```
 
@@ -30,8 +40,8 @@ end
 |> Enum.map(fn {:ok, result} -> result end)
 ```
 
-http://dino.codes/posts/elixir-findings-asynchronous-task-streams/  
-https://learn-elixir.dev/blogs/uses-of-elixir-task-module
+Read about the execution time between synchronous and asynchronous HTTP request jobs
+https://holyxiaoxin.github.io/async-tasks-benchmark/
 
 ```elixir
 items = ["alpha", "beta", "gama"]

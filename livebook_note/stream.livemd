@@ -1,0 +1,43 @@
+# Elixir Stream
+
+## Note about Elixir Stream
+
+Elixir supports lazy evaluation by Stream module.
+Now let's explore some useful functions of the Stream module.
+
+```elixir
+Stream.unfold(0, fn
+  10 -> nil
+  i -> {i, i + 1}
+end)
+|> Enum.to_list()
+```
+
+Generate infinity sequence
+
+```elixir
+Stream.unfold(0, fn
+  i -> {i, i + 1}
+end)
+|> Enum.take(20)
+```
+
+```elixir
+# Infinity Fibonacci Sequence
+Stream.unfold(0, fn
+  0 -> {0, {0, 1}}
+  {ix, iy} -> {iy, {iy, ix + iy}}
+end)
+|> Enum.take(10)
+```
+
+Streams are composable, meaning we can perform an arbitrary number of computation stages efficiently on large collections.
+
+```elixir
+1..10
+|> Stream.map(fn i -> i * 2 end)
+|> Stream.filter(fn i -> i >= 4 end)
+|> Enum.take(4)
+```
+
+https://gist.github.com/mgwidmann/5e0cb590f12e2ca239564d07d7c2a572

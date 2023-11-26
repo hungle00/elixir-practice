@@ -1,0 +1,65 @@
+# draft
+
+## Implement CarPark
+
+```elixir
+defmodule CarPark do
+  defstruct [:status, :cars]
+
+  def new do
+    %CarPark{status: :closed, cars: []}
+  end
+
+  def open(park), do: %CarPark{park | status: :open}
+  def close(park), do: %CarPark{park | status: :closed}
+
+  def park(%CarPark{cars: cars} = park, new_car) do
+    %CarPark{park | cars: [new_car | cars]}
+  end
+
+  def unpark(%CarPark{cars: cars} = park, remove_car) do
+    less_cars = Enum.filter(cars, fn car -> car == remove_car end)
+    %CarPark{park | cars: less_cars}
+  end
+end
+```
+
+```elixir
+# Creates a new struct
+CarPark.new()
+# Creates a new struct with status = open
+|> CarPark.open()
+# Creates a new struct with a porsche parked
+|> CarPark.park("porsche")
+# ...
+|> CarPark.unpark("porsche")
+# ...
+|> CarPark.close()
+```
+
+## Implement Queue
+
+```elixir
+defmodule SimpleQueue do
+  def enqueue(queue, item) do
+    [item | queue]
+  end
+
+  def peak(queue) do
+    [head | _] = queue
+    head
+  end
+
+  def dequeue(queue) do
+    Enum.drop(queue, -1)
+  end
+
+  def count(queue), do: length(queue)
+end
+```
+
+```elixir
+[1, 3, 5]
+|> SimpleQueue.enqueue(9)
+|> SimpleQueue.dequeue()
+```

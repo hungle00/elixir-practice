@@ -1,0 +1,56 @@
+# Stateful Stack
+
+## Section
+
+```elixir
+defmodule Stack do
+  def start(state) do
+    spawn(__MODULE__, :loop, [state])
+  end
+
+  def loop(state) do
+    receive do
+      {_from, :push, value} ->
+        loop([value | state])
+
+      {from, :pop} ->
+        [head | tail] = state
+        send(from, {:reply, head})
+        loop(tail)
+    end
+
+    loop(state)
+  end
+
+  # add client interface
+  def push(pid, value) do
+    send(pid, {self(), :push, value})
+    :ok
+  end
+
+  def pop(pid) do
+    send(pid, {self(), :pop})
+
+    receive do
+      {:reply, value} -> value
+    end
+  end
+end
+```
+
+```elixir
+pid = spawn(Stack, :loop, [[]])
+# async function
+send(pid, {self(), :push, 1})
+# send(pid, {self(), :pop})    # sync function - return value
+```
+
+```elixir
+pid = Stack.start([4, 2, 3])
+Stack.push(pid, 5)
+Stack.pop(pid)
+```
+
+```elixir
+Stack.pop(pid)
+```
