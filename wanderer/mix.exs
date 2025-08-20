@@ -1,11 +1,11 @@
-defmodule ToyRobot.MixProject do
+defmodule Wanderer.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :toy_robot,
+      app: :wanderer,
       version: "0.1.0",
-      elixir: "~> 1.14",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -21,6 +21,8 @@ defmodule ToyRobot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:floki, "~> 0.35.0"},
+      {:httpoison, "~> 2.0"}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]
